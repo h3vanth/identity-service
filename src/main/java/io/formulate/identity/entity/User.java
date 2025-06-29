@@ -1,38 +1,22 @@
 package io.formulate.identity.entity;
 
+import io.formulate.identity.model.BaseUserView;
 import io.formulate.identity.model.UserView;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
-  @Id
-  @GeneratedValue
-  @Column(updatable = false, nullable = false)
-  private Long id;
-
-  @Column(updatable = false, nullable = false)
-  private String email;
-
+public class User extends BaseUser {
   @Column(nullable = false)
   private String password;
-
-  @Column(updatable = false, nullable = false, unique = true)
-  private String username;
 
   @Column(name = "first_name", updatable = false, nullable = false)
   private String firstName;
@@ -44,40 +28,16 @@ public class User {
   @Column(nullable = false)
   private UserStatus status;
 
-  @Version
-  @Column(nullable = false)
-  private Long version;
-
-  @CreatedDate
-  @Column(nullable = false)
-  private LocalDateTime createTime;
-
   @LastModifiedDate
   @Column(nullable = false)
   private LocalDateTime updateTime;
 
-  @Column(name = "tenant_id", updatable = false, nullable = false)
-  private String tenantId;
-
-  @ManyToMany private List<Role> roles;
-
   public User(String tenantId, UserView userView) {
-    id = userView.getId();
-    email = userView.getEmail();
+    super(tenantId, userView);
+
     password = userView.getPassword();
-    username = userView.getUsername();
     firstName = userView.getFirstName();
     lastName = userView.getLastName();
-    roles =
-        Optional.ofNullable(userView.getRoles())
-            .map(
-                roleViews ->
-                    roleViews.stream()
-                        .map(roleView -> new Role(tenantId, roleView))
-                        .collect(Collectors.toList()))
-            .orElse(null);
-
-    this.tenantId = tenantId;
   }
 
   @PrePersist
@@ -89,7 +49,8 @@ public class User {
   @PreUpdate
   public void preUpdate() {}
 
-  public UserView toUserView() {
+  @Override
+  public BaseUserView toBaseUserView() {
     return new UserView(
         id, email, null, username, firstName, lastName, status, Role.toRoleViews(roles));
   }

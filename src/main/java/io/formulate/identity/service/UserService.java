@@ -1,8 +1,8 @@
 package io.formulate.identity.service;
 
-import io.formulate.identity.entity.Role;
-import io.formulate.identity.entity.User;
-import io.formulate.identity.entity.UserStatus;
+import io.formulate.identity.entity.*;
+import io.formulate.identity.model.ApiUserView;
+import io.formulate.identity.model.BaseUserView;
 import io.formulate.identity.model.RoleView;
 import io.formulate.identity.model.UserView;
 import io.formulate.identity.repository.user.UserRepository;
@@ -16,28 +16,47 @@ import org.springframework.stereotype.Service;
 public class UserService {
   private final UserRepository userRepository;
 
-  public UserView createUser(String tenantId, UserView userView) {
-    return userRepository.save(new User(tenantId, userView)).toUserView();
+  public BaseUserView createUser(String tenantId, BaseUserView baseUserView) {
+    BaseUser user = null;
+    if (baseUserView instanceof UserView userView) {
+      user = new User(tenantId, userView);
+    } else if (baseUserView instanceof ApiUserView apiUserView) {
+      user = new ApiUser(tenantId, apiUserView);
+    }
+
+    if (user == null) {
+      throw new RuntimeException("Invalid type!");
+    }
+
+    return userRepository.save(user).toBaseUserView();
   }
 
   public void updatePassword(String tenantId, Long userId, boolean activate, String password) {
-    User user = userRepository.findById(userId).orElseThrow();
+    BaseUser baseUser = userRepository.findById(userId).orElseThrow();
+
+    if (!(baseUser instanceof User)) {
+      throw new RuntimeException("Invalid type!");
+    }
+
+    User user = (User) baseUser;
     user.setPassword(password);
     if (activate) {
       user.setStatus(UserStatus.ACTIVE);
     }
+
     userRepository.save(user);
   }
 
-  public UserView updateRoles(String tenantId, Long userId, List<RoleView> roles) {
-    User user = userRepository.findById(userId).orElseThrow();
+  public BaseUserView updateRoles(String tenantId, Long userId, List<RoleView> roles) {
+    BaseUser user = userRepository.findById(userId).orElseThrow();
     user.setRoles(
         roles.stream().map(roleView -> new Role(tenantId, roleView)).collect(Collectors.toList()));
-    return userRepository.save(user).toUserView();
+    return userRepository.save(user).toBaseUserView();
   }
 
+  // Only applicable for io.formulate.identity.entity.User
   public void updateStatus(String tenantId, Long userId, UserStatus status) {
-    User user = userRepository.findById(userId).orElseThrow();
+    User user = (User) userRepository.findById(userId).orElseThrow();
     user.setStatus(status);
     userRepository.save(user);
   }
