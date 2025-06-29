@@ -6,10 +6,10 @@ import io.formulate.identity.entity.UserStatus;
 import io.formulate.identity.model.RoleView;
 import io.formulate.identity.model.UserView;
 import io.formulate.identity.repository.user.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,8 @@ public class UserService {
 
   public UserView updateRoles(String tenantId, Long userId, List<RoleView> roles) {
     User user = userRepository.findById(userId).orElseThrow();
-    user.setRoles(roles.stream().map(roleView -> new Role(tenantId, roleView)).toList());
+    user.setRoles(
+        roles.stream().map(roleView -> new Role(tenantId, roleView)).collect(Collectors.toList()));
     return userRepository.save(user).toUserView();
   }
 

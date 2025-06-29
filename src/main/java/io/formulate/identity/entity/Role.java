@@ -4,12 +4,14 @@ import io.formulate.identity.model.RoleView;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,7 +35,7 @@ public class Role {
                 permissionViews ->
                     permissionViews.stream()
                         .map(permissionView -> new Permission(tenantId, permissionView))
-                        .toList())
+                        .collect(Collectors.toList()))
             .orElse(null);
 
     this.tenantId = tenantId;

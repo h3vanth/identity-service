@@ -4,13 +4,12 @@ import io.formulate.identity.entity.Permission;
 import io.formulate.identity.entity.Role;
 import io.formulate.identity.model.RoleView;
 import io.formulate.identity.repository.role.RoleRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ public class RoleService {
       role.setPermissions(
           roleView.getPermissions().stream()
               .map(permissionView -> new Permission(tenantId, permissionView))
-              .toList());
+              .collect(Collectors.toList()));
     }
 
     return Role.toRoleViews(roleRepository.saveAll(roles));

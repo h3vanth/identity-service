@@ -4,6 +4,8 @@ import io.formulate.identity.model.UserView;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -57,7 +59,7 @@ public class User {
   @Column(name = "tenant_id", updatable = false, nullable = false)
   private String tenantId;
 
-  @OneToMany private List<Role> roles;
+  @ManyToMany private List<Role> roles;
 
   public User(String tenantId, UserView userView) {
     id = userView.getId();
@@ -66,6 +68,14 @@ public class User {
     username = userView.getUsername();
     firstName = userView.getFirstName();
     lastName = userView.getLastName();
+    roles =
+        Optional.ofNullable(userView.getRoles())
+            .map(
+                roleViews ->
+                    roleViews.stream()
+                        .map(roleView -> new Role(tenantId, roleView))
+                        .collect(Collectors.toList()))
+            .orElse(null);
 
     this.tenantId = tenantId;
   }

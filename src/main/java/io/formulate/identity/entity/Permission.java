@@ -2,15 +2,16 @@ package io.formulate.identity.entity;
 
 import io.formulate.identity.model.PermissionView;
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Optional;
-
 @Entity
-@Table(name = "permissions")
+@Table(
+    name = "permissions",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 @NoArgsConstructor
