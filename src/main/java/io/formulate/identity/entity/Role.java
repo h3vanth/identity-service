@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,17 @@ public class Role {
   @Column(nullable = false)
   private String name;
 
-  @OneToMany private List<Permission> permissions;
+  @ManyToMany
+  @JoinTable(
+      name = "roles_permissions",
+      // Included to demonstrate how to customize column names
+      joinColumns = @JoinColumn(name = "role_id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_id"))
+  private List<Permission> permissions;
+
+  @ManyToMany
+  @JoinTable(name = "users_roles")
+  private List<AbstractUser> users;
 
   @Column(name = "tenant_id", updatable = false, nullable = false)
   private String tenantId;

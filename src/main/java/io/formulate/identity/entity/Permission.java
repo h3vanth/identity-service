@@ -21,6 +21,9 @@ public class Permission {
   @Column(nullable = false)
   private String name;
 
+  @ManyToMany(mappedBy = "permissions")
+  private List<Role> roles;
+
   @Column(name = "tenant_id", updatable = false, nullable = false)
   private String tenantId;
 

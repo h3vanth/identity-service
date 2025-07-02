@@ -1,4 +1,4 @@
-package io.formulate.identity.entity;
+package io.formulate.identity.model;
 
 public enum UserStatus {
   ACTIVE,

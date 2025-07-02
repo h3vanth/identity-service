@@ -1,6 +1,6 @@
 package io.formulate.identity.controller;
 
-import io.formulate.identity.model.BaseUserView;
+import io.formulate.identity.model.AbstractUserView;
 import io.formulate.identity.model.RoleView;
 import io.formulate.identity.service.UserService;
 import java.util.List;
@@ -15,9 +15,9 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  public BaseUserView createUser(
-      @PathVariable("tenantId") String tenantId, @RequestBody BaseUserView baseUserView) {
-    return userService.createUser(tenantId, baseUserView);
+  public AbstractUserView createUser(
+      @PathVariable("tenantId") String tenantId, @RequestBody AbstractUserView abstractUserView) {
+    return userService.createUser(tenantId, abstractUserView);
   }
 
   @PatchMapping(value = "/{userId}/password", consumes = MediaType.TEXT_PLAIN_VALUE)
@@ -30,12 +30,17 @@ public class UserController {
   }
 
   @PatchMapping("/{userId}/roles")
-  public BaseUserView updateRoles(
+  public AbstractUserView updateRoles(
       @PathVariable("tenantId") String tenantId,
       @PathVariable("userId") Long userId,
       @RequestBody List<RoleView> roles) {
     return userService.updateRoles(tenantId, userId, roles);
   }
 
-  // Create endpoints to get all users, update roles in bulk
+  @GetMapping
+  public List<AbstractUserView> getUsers(@PathVariable("tenantId") String tenantId) {
+    return userService.getUsers(tenantId);
+  }
+
+  // Create endpoints to update roles, products in bulk
 }

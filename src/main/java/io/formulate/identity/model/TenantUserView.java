@@ -1,6 +1,5 @@
 package io.formulate.identity.model;
 
-import io.formulate.identity.entity.UserStatus;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,15 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserView extends BaseUserView {
-  public static final String TYPE = "UserView";
+public class TenantUserView extends AbstractUserView {
+  public static final String TYPE = "Tenant";
 
   private String password;
   private String firstName;
   private String lastName;
   private UserStatus status;
 
-  public UserView(
+  public TenantUserView(
       Long id,
       String email,
       String password,
@@ -25,8 +24,9 @@ public class UserView extends BaseUserView {
       String firstName,
       String lastName,
       UserStatus status,
-      List<RoleView> roles) {
-    super(id, email, username, roles);
+      List<RoleView> roles,
+      List<ProductView> products) {
+    super(id, email, username, roles, products);
 
     this.password = password;
     this.firstName = firstName;
