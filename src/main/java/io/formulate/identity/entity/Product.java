@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "products")
+@Table(
+    name = "products",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 @NoArgsConstructor
