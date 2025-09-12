@@ -77,11 +77,5 @@ public abstract class AbstractUser {
     this.tenantId = tenantId;
   }
 
-  public AbstractUserView toAbstractUserView() {
-    return switch (this) {
-      case TenantUser tenantUser -> tenantUser.toAbstractUserView();
-      case IntegrationUser integrationUser -> integrationUser.toAbstractUserView();
-      default -> null;
-    };
-  }
+  public abstract AbstractUserView toAbstractUserView();
 }
