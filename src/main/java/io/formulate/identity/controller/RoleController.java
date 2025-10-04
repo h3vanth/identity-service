@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("tenants/{tenantId}/api/v1/roles")
+@RequestMapping("api/v1/tenants/{tenantId}/roles")
 @RequiredArgsConstructor
 public class RoleController {
   private final RoleService roleService;

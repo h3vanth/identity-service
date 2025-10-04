@@ -32,10 +32,11 @@ public class Role {
   @JoinTable(name = "users_roles")
   private List<AbstractUser> users;
 
-  @Column(name = "tenant_id", updatable = false, nullable = false)
-  private String tenantId;
+  @ManyToOne
+  @JoinColumn(name = "tenant_id")
+  private Tenant tenant;
 
-  public Role(String tenantId, RoleView roleView) {
+  public Role(RoleView roleView, Tenant tenant) {
     id = roleView.getId();
     name = roleView.getName();
     permissions =
@@ -43,11 +44,11 @@ public class Role {
             .map(
                 permissionViews ->
                     permissionViews.stream()
-                        .map(permissionView -> new Permission(tenantId, permissionView))
+                        .map(permissionView -> new Permission(permissionView, tenant))
                         .collect(Collectors.toList()))
             .orElse(null);
 
-    this.tenantId = tenantId;
+    this.tenant = tenant;
   }
 
   public RoleView toRoleView() {

@@ -43,8 +43,9 @@ public abstract class AbstractUser {
   @Column(nullable = false)
   protected LocalDateTime createTime;
 
-  @Column(name = "tenant_id", updatable = false, nullable = false)
-  protected String tenantId;
+  @ManyToOne
+  @JoinColumn(name = "tenant_id")
+  protected Tenant tenant;
 
   @ManyToMany(mappedBy = "users")
   protected List<Role> roles;
@@ -53,7 +54,7 @@ public abstract class AbstractUser {
   @JoinTable(name = "users_products")
   protected List<Product> products;
 
-  public AbstractUser(String tenantId, AbstractUserView abstractUserView) {
+  public AbstractUser(AbstractUserView abstractUserView, Tenant tenant) {
     id = abstractUserView.getId();
     email = abstractUserView.getEmail();
     username = abstractUserView.getUsername();
@@ -62,7 +63,7 @@ public abstract class AbstractUser {
             .map(
                 roleViews ->
                     roleViews.stream()
-                        .map(roleView -> new Role(tenantId, roleView))
+                        .map(roleView -> new Role(roleView, tenant))
                         .collect(Collectors.toList()))
             .orElse(null);
     products =
@@ -70,11 +71,11 @@ public abstract class AbstractUser {
             .map(
                 productViews ->
                     productViews.stream()
-                        .map(productView -> new Product(tenantId, productView))
+                        .map(productView -> new Product(productView, tenant))
                         .collect(Collectors.toList()))
             .orElse(null);
 
-    this.tenantId = tenantId;
+    this.tenant = tenant;
   }
 
   public abstract AbstractUserView toAbstractUserView();

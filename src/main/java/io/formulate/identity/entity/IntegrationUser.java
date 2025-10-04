@@ -20,8 +20,8 @@ public class IntegrationUser extends AbstractUser {
   @Column(name = "api_key", updatable = false, nullable = true)
   private String apiKey;
 
-  public IntegrationUser(String tenantId, IntegrationUserView integrationUserView) {
-    super(tenantId, integrationUserView);
+  public IntegrationUser(IntegrationUserView integrationUserView, Tenant tenant) {
+    super(integrationUserView, tenant);
   }
 
   @Override

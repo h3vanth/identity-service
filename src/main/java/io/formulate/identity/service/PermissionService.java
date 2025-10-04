@@ -1,8 +1,10 @@
 package io.formulate.identity.service;
 
 import io.formulate.identity.entity.Permission;
+import io.formulate.identity.entity.Tenant;
 import io.formulate.identity.model.PermissionView;
 import io.formulate.identity.repository.permission.PermissionRepository;
+import io.formulate.identity.repository.tenant.TenantRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,12 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PermissionService {
   private final PermissionRepository permissionRepository;
+  private final TenantRepository tenantRepository;
 
   public List<PermissionView> upsertPermissions(String tenantId, List<PermissionView> permissions) {
+    Tenant tenant = tenantRepository.findById(Long.valueOf(tenantId)).orElseThrow();
     return Permission.toPermissionViews(
         permissionRepository.saveAll(
             permissions.stream()
-                .map(permissionView -> new Permission(tenantId, permissionView))
+                .map(permissionView -> new Permission(permissionView, tenant))
                 .toList()));
   }
 

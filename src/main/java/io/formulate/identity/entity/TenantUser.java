@@ -1,8 +1,8 @@
 package io.formulate.identity.entity;
 
 import io.formulate.identity.model.AbstractUserView;
-import io.formulate.identity.model.UserStatus;
 import io.formulate.identity.model.TenantUserView;
+import io.formulate.identity.model.UserStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -34,8 +34,8 @@ public class TenantUser extends AbstractUser {
   @Column(nullable = false)
   private LocalDateTime updateTime;
 
-  public TenantUser(String tenantId, TenantUserView tenantUserView) {
-    super(tenantId, tenantUserView);
+  public TenantUser(TenantUserView tenantUserView, Tenant tenant) {
+    super(tenantUserView, tenant);
 
     password = tenantUserView.getPassword();
     firstName = tenantUserView.getFirstName();

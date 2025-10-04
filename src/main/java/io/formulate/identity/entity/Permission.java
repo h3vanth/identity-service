@@ -24,14 +24,15 @@ public class Permission {
   @ManyToMany(mappedBy = "permissions")
   private List<Role> roles;
 
-  @Column(name = "tenant_id", updatable = false, nullable = false)
-  private String tenantId;
+  @ManyToOne
+  @JoinColumn(name = "tenant_id")
+  private Tenant tenant;
 
-  public Permission(String tenantId, PermissionView permissionView) {
+  public Permission(PermissionView permissionView, Tenant tenant) {
     id = permissionView.getId();
     name = permissionView.getName();
 
-    this.tenantId = tenantId;
+    this.tenant = tenant;
   }
 
   public PermissionView toPermissionView() {

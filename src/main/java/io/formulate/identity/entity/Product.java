@@ -24,15 +24,16 @@ public class Product {
   @Column(nullable = false)
   private String description;
 
-  @Column(name = "tenant_id", updatable = false, nullable = false)
-  private String tenantId;
+  @ManyToOne
+  @JoinColumn(name = "tenant_id")
+  private Tenant tenant;
 
-  public Product(String tenantId, ProductView productView) {
+  public Product(ProductView productView, Tenant tenant) {
     id = productView.getId();
     name = productView.getName();
     description = productView.getDescription();
 
-    this.tenantId = tenantId;
+    this.tenant = tenant;
   }
 
   public ProductView toProductView() {

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("tenants/{tenantId}/api/v1/permissions")
+@RequestMapping("api/v1/tenants/{tenantId}/permissions")
 @RequiredArgsConstructor
 public class PermissionController {
   private final PermissionService permissionService;

@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tenants/{tenantId}/api/v1/users")
+@RequestMapping("api/v1/tenants/{tenantId}/users")
 @RequiredArgsConstructor
 public class UserController {
   private final UserService userService;
